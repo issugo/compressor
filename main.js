@@ -96,6 +96,13 @@ const createWindow = () => {
     mainWindow.maximize()
     mainWindow.setTitle("Image Optimizer")
     mainWindow.loadFile('index.html')
+
+    mainWindow.on("close", (e) => {
+        if (mainWindow.isVisible()) {
+            e.preventDefault()
+            mainWindow.hide()
+        }
+    })
     // open dev tools
     // mainWindow.webContents.openDevTools()
 }
@@ -104,8 +111,8 @@ app.whenReady().then(() => {
 
     tray = new Tray(iconPath)
     const contextMenu = Menu.buildFromTemplate([
-        { label: 'Quit App', type: 'normal', click: () => app.quit() },
-        { label: 'Open Interface', type: 'normal', click: () => {if (BrowserWindow.getAllWindows().length === 0) createWindow()} },
+        { label: 'Quit App', type: 'normal', click: () => mainWindow.isVisible() ? mainWindow.hide() : app.quit() },
+        { label: 'Open Interface', type: 'normal', click: () => mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show() },
         { label: 'choose picture', type: 'normal', click: () => compress()}
     ])
     tray.setToolTip('Compressor App.')
@@ -134,5 +141,5 @@ app.whenReady().then(() => {
 })
 
 app.on('window-all-closed', () => {
-    return
+
 })
